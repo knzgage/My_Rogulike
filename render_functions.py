@@ -64,6 +64,7 @@ def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, sc
                         libtcod.console_set_char_background(con, x, y, colors.get('light_ground'), libtcod.BKGND_SET)
 
                     game_map.tiles[x][y].explored = True
+
                 elif game_map.tiles[x][y].explored:
                     if wall:
                         libtcod.console_set_char_background(con, x, y, colors.get('dark_wall'), libtcod.BKGND_SET)
