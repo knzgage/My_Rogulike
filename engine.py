@@ -62,7 +62,7 @@ def main():
     libtcod.console_init_root(screen_width, screen_height, "libtcod tutorial revised", False)
 
     con = libtcod.console_new(screen_width, screen_height)
-    panel =libtcod.console_new(screen_width, panel_height)
+    panel = libtcod.console_new(screen_width, panel_height)
 
     game_map = GameMap(map_width, map_height)
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities,
@@ -94,11 +94,12 @@ def main():
 
         clear_all(con, entities)
 
-        action = handle_keys(key)
+        action = handle_keys(key, game_state)
 
         move = action.get("move")
         pickup = action.get("pickup")
         show_inventory = action.get("show_inventory")
+        inventory_index = action.get("inventory_index")
         exit = action.get("exit")
         fullscreen = action.get("fullscreen")
 
@@ -136,6 +137,11 @@ def main():
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVENTORY
 
+        if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(
+                player.inventory.items):
+            item = player.inventory.items[inventory_index]
+            player_turn_results.extend(player.inventory.use(item))
+
         if exit:
             if game_state == GameStates.SHOW_INVENTORY:
                 game_state = previous_game_state
@@ -149,6 +155,7 @@ def main():
             message = player_turn_result.get("message")
             dead_entity = player_turn_result.get("dead")
             item_added = player_turn_result.get("item_added")
+            item_consumed = player_turn_result.get("consumed")
 
             if message:
                 message_log.add_message(message)
@@ -164,6 +171,9 @@ def main():
             if item_added:
                 entities.remove(item_added)
 
+                game_state = GameStates.ENEMY_TURN
+
+            if item_consumed:
                 game_state = GameStates.ENEMY_TURN
 
         if game_state == GameStates.ENEMY_TURN:
