@@ -1,5 +1,6 @@
 import tcod as libtcod
 
+
 def menu(con, header, options, width, screen_width, screen_height):
     if len(options) > 26:
         raise ValueError("Cannot have a menu with more than 26 options.")
@@ -38,3 +39,19 @@ def inventory_menu(con, header, inventory, inventory_width, screen_width, screen
         options = [item.name for item in inventory.items]
 
     menu(con, header, options, inventory_width, screen_width, screen_height)
+
+
+def main_menu(con, background_image, screen_width, screen_height):
+    libtcod.image_blit_2x(background_image, 0, 0, 0)
+
+    libtcod.console_set_default_foreground(0, libtcod.light_yellow)
+    libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height / 2) - 4, libtcod.BKGND_NONE, libtcod.CENTER,
+                             "TOMBS OF THE ANCIENT KINGS")
+    libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height - 2), libtcod.BKGND_NONE, libtcod.CENTER,
+                             "By Kenzie Gage")
+
+    menu(con, '', ["Play a new game", "Continue last game", "Quit"], 24, screen_width, screen_height)
+
+
+def message_box(con, header, width, screen_width, screen_height):
+    menu(con, header, [], width, screen_width, screen_height)
